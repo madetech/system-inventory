@@ -1,0 +1,21 @@
+title: System Inventory Dashboard
+exclude:
+- .gitignore
+- .jekyll-cache
+- bin
+- Gemfile
+- Gemfile.lock
+- images
+- LICENSE
+- README.md
+- system.code-snippet
+emptyArray: []
+collections:
+  systems:
+    output: true
+defaults:
+  - scope:
+      path: ""
+      type: "systems"
+    values:
+      layout: system

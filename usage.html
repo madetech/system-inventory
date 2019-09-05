@@ -1,0 +1,40 @@
+---
+layout: default
+title: Details
+---
+{% assign i1_count = 0 %}
+{% assign i2_count = 0 %}
+{% assign i3_count = 0 %}
+{% assign branches = 'Instance 1,Instance 2,Instance 3' | split: ',' %}
+<table class="usageMap">
+    <tr>
+        <th>System Name</th>
+        {% for column in branches %}
+          <th>{{column}}</th>
+        {% endfor %}
+    </tr>
+    {% assign systems = site.systems | sort: 'name' %}
+    {% for row in systems %}
+    <tr class="{{row.hosted }}">
+        <td><a href="{{row.url | relative_url}}">{{row.name}}</a></td>
+        {% for branch in branches %}
+          {% assign found = false %}
+          {% for instance in row.instances %}
+            {% if instance.name == branch %}
+              {% assign found = true %}
+              {% if branch == 'Instance 1' %}{% assign i1_count = i1_count | plus: 1 %}{% endif %}
+              {% if branch == 'Instance 2' %}{% assign i2_count = i2_count | plus: 1 %}{% endif %}
+              {% if branch == 'Instance 3' %}{% assign i3_count = i3_count | plus: 1 %}{% endif %}
+            {% endif %}
+          {% endfor %}
+          <td{% if found %} class="true"{% endif %}></td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    <tr>
+      <td>Total:</td>
+      <td>{{i1_count}}</td>
+      <td>{{i2_count}}</td>
+      <td>{{i3_count}}</td>
+    </tr>
+</table>

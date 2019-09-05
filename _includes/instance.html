@@ -1,0 +1,43 @@
+<div class="instance">
+  <h2>{{instance.name }}</h2>
+  {% if instance.tags %}
+    <ul class="tags">
+    {% for tag in instance.tags %}
+      <li>{{ tag }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  <h3>Dependencies</h3>
+  <div id ="dependencies">
+    <h4>Depends on this system:</h4>
+    <ul>
+    {% assign deps = false %}
+    {% for system in site.systems %}
+      {% for depinstance in system.instances %}
+        {% for dep in depinstance.dependencies %}
+          {% if dep == include.appname %}
+            {% if depinstance.name == instance.name %}
+              {% assign deps = true %}
+              <li><a href="{{system.url}}">{{system.name}}</a></li>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+    {% endfor %}
+    {% if deps == false %}<li class="nothing">Nothing</li>{% endif %}
+    </ul>
+    <h4>This system depends on:</h4> 
+    <ul>
+    {% assign deps = false %}
+    {% for dep in instance.dependencies %}
+      {% for system in site.systems %}
+        {% if system.name == dep %}
+          {% assign deps = true %}
+          <li><a href="{{system.url}}">{{system.name}}</a></li>
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+    {% if deps == false %}<li class="nothing">Nothing</li>{% endif %}
+    </ul>
+  </div>
+</div>

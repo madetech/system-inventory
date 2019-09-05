@@ -1,0 +1,239 @@
+---
+layout: default
+title: Home
+---
+
+{% assign all_systems = site.systems | sort: 'name' %}
+{% assign infra = all_systems | where: 'infrastructure', true %}
+
+<div class="funnel">
+  <div id="allSystems" class="stage">
+    <div class="systemList">
+      <h2>We discovered {{ all_systems.size | minus: infra.size }} systems</h2>
+      {% for system in all_systems %}
+        {% unless system.infrastructure %}
+          {% include system.html system=system %}
+        {% endunless %}
+      {% endfor %}
+    </div>
+  </div>
+  
+  {% assign in_cloud = all_systems | where: 'hosted', 'external' %}
+  {% assign eol = all_systems | where: 'lifespan', 'eol' %}
+  {% assign all_out_of_scope = in_cloud | concat: eol %}
+
+  <div id="arrow1" class="arrow"></div>
+  <div id="arrow2" class="arrow"></div>
+  <div id="arrow3" class="arrow"></div>
+
+  <div id="externallyHosted" class="stage">
+    <div class="systemList">
+      <h2>{{ in_cloud.size }} are externally hosted</h2>
+      {% for system in in_cloud %}
+        {% include system.html system=system %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <div id ="endOfLife" class="stage">
+    <div class="systemList">
+      <h2>{{ eol.size }} are end of lifed</h2>
+      {% for system in eol %}
+        {% include system.html system=system %}
+      {% endfor %}
+    </div>
+  </div>
+  
+  {% assign on_prem = site.systems | where: 'hosted', 'on_prem' %}
+  {% assign migrating = on_prem | where: 'lifespan', 'migrating' %}
+  {% assign ongoing = on_prem | where: 'lifespan', 'ongoing' %}
+  {% assign ongoing = ongoing | sort: 'name' %}
+  {% assign all_in_scope = migrating | concat: ongoing %}
+  {% assign missing = all_systems | where: 'lifespan', 'tbc' %}
+  {% assign target_in_scope_count =  all_systems.size | minus : all_out_of_scope.size %}
+  {% assign target_in_scope_count =  target_in_scope_count | minus : missing.size %}
+
+  <div id="inScope" class="stage">
+    <div class="systemList">
+      <h2>leaving {{ target_in_scope_count | minus: infra.size }} systems ...</h2>
+      {% for system in all_systems %}
+        {% if system.lifespan == 'migrating' or system.lifespan == 'ongoing' and system.hosted == 'on_prem' %}
+          {% unless system.infrastructure %}
+            {% include system.html system=system %}
+          {% endunless %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <div id="arrow4" class="arrow"></div>
+  <div id="arrow5" class="arrow"></div>
+
+  <div id="migrating" class="stage">
+    <div class="systemList">
+      <h2>{{ migrating.size }} are already being considered for migration</h2>
+      {% for system in migrating %}
+        {% include system.html system=system %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <div id="onGoing" class="stage">
+    <div class="systemList">
+      <h2>leaving {{ ongoing.size | minus: infra.size }} active systems to consider</h2>
+      {% for system in ongoing %}
+        {% unless system.infrastructure %}
+          {% include system.html system=system %}
+        {% endunless %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <div id="arrow6" class="arrow"></div>
+  <div id="arrow7" class="arrow"></div>
+  <div id="arrow8" class="arrow"></div>
+
+  <div id="i1" class="stage">
+    <div class="systemList">
+      <h2>Instance 1</h2>
+      {% for system in ongoing %}
+        {% unless system.infrastructure %}
+          {% assign found = false %}
+          {% for instance in system.instances %}
+            {% if instance.name == 'Instance 1' %}
+              {% assign found = true %}
+            {% endif %}
+          {% endfor %}
+          {% if found %}
+            {% include system.html system=system %}
+          {% endif %}
+        {% endunless %}
+      {% endfor %}
+    </div>
+  </div>
+  <div id="i3" class="stage">
+    <div class="systemList">
+      <h2>Instance 2</h2>
+      {% for system in ongoing %}
+        {% unless system.infrastructure %}
+          {% assign found = false %}
+          {% for instance in system.instances %}
+            {% if instance.name == 'Instance 2' %}
+              {% assign found = true %}
+            {% endif %}
+          {% endfor %}
+          {% if found %}
+            {% include system.html system=system %}
+          {% endif %}
+        {% endunless %}
+      {% endfor %}
+    </div>
+  </div>
+  <div id="i2" class="stage">
+    <div class="systemList">
+      <h2>Instance 3</h2>
+      {% for system in ongoing %}
+        {% unless system.infrastructure %}
+          {% assign found = false %}
+          {% for instance in system.instances %}
+            {% if instance.name == 'Instance 3' %}
+              {% assign found = true %}
+            {% endif %}
+          {% endfor %}
+          {% if found %}
+            {% include system.html system=system %}
+          {% endif %}
+        {% endunless %}
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if missing.size > 0 %}
+  <div id="missing" class="stage">
+    <div class="systemList">
+      <h2>We're missing infformation on {{ missing.size }} systems</h2>
+      {% for system in missing %}
+      {% include system.html system=system %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<div class="stage">
+  <div class="systemList">
+    <h2>Desktop</h2>
+    {% for system in ongoing %}
+      {% unless system.infrastructure %}
+        {% if system.archetype == 'desktop' %}
+          {% include system.html system=system %}
+        {% endif %}
+      {% endunless %}
+    {% endfor %}
+  </div>
+</div>
+  
+<div class="stage">
+  <div class="systemList">
+    <h2>Windows Web</h2>
+    {% for system in ongoing %}
+      {% unless system.infrastructure %}
+        {% if system.archetype == 'windows-web' %}
+          {% include system.html system=system %}
+        {% endif %}
+      {% endunless %}
+    {% endfor %}
+  </div>
+</div>
+  
+<div class="stage">
+  <div class="systemList">
+    <h2>Agnostic Web</h2>
+    {% for system in ongoing %}
+      {% unless system.infrastructure %}
+        {% if system.archetype == 'agnostic-web' %}
+          {% include system.html system=system %}
+        {% endif %}
+      {% endunless %}
+    {% endfor %}
+  </div>
+</div>
+  
+<div class="stage">
+  <div class="systemList">
+    <h2>On-site Requirements</h2>
+    {% for system in ongoing %}
+      {% unless system.infrastructure %}
+        {% if system.archetype == 'onsite' %}
+          {% include system.html system=system %}
+        {% endif %}
+      {% endunless %}
+    {% endfor %}
+  </div>
+</div>
+  
+<div class="stage">
+  <div class="systemList">
+    <h2>Special Cases</h2>
+    {% for system in ongoing %}
+      {% unless system.infrastructure %}
+        {% if system.archetype == 'special' %}
+          {% include system.html system=system %}
+        {% endif %}
+      {% endunless %}
+    {% endfor %}
+  </div>
+</div>
+  
+<div class="stage">
+  <div class="systemList">
+    <h2>Unknown</h2>
+    {% for system in ongoing %}
+      {% unless system.infrastructure %}
+        {% if system.archetype == 'unknown' %}
+          {% include system.html system=system %}
+        {% endif %}
+      {% endunless %}
+    {% endfor %}
+  </div>
+</div>

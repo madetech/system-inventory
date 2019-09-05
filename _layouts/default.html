@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>{{ page.title }}</title>
+        <link rel="stylesheet" href="{{ '/assets/reset.css' | relative_url }}">
+        <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
+    </head>
+    <body>
+      <header>
+        <a href="{{ '/' | relative_url }}"><img src="/assets/logo.png"></a>
+        <a href="{{ '/' | relative_url }}"><h1>{{ site.title}}</h1></a>
+      </header>
+      <nav>
+        <ul>
+          <li><a href="/">System Filter</a></li>
+          <li><a href="/usage">System Usage</a></li>
+        </ul>
+      </nav>
+      <main>
+        {{ content }}
+      </main>
+    </body>
+</html>
