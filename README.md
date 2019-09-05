@@ -68,7 +68,7 @@ Browse to http://localhost:4000 to see your system inventory site.
 
 There are a few examples of different types of systems in the `_systems` folder. To add a system, you create another Markdown file (`.md`). Use the content below as an example (`example_system.md`):
 
-```ruby
+```markdown
 ---
 name: Example System
 hosted: on_prem
