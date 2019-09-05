@@ -89,7 +89,7 @@ Example system notes. This will be displayed on the website.
 ```
 For the above example, the following image shows how the information will be displayed on the website.
 
-![system](./images/example_system.png)
+<img src="./images/example_system.png" width="50%" />
 
 #### System content breakdown:
 
